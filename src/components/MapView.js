@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
+import { useLocation, useHistory } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import Markers from "./Markers";
 
@@ -10,6 +11,25 @@ const MapView = () => {
     currentLocation: { lat: "52.52437", lng: "13.41053" },
     zoom: 13,
   });
+
+  const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    let isMounted = true;
+    if (location.state.latitude & location.state.longitude) {
+      const currentLocation = {
+        lat: location.state.latitude,
+        lng: location.state.longitude,
+      };
+      setstate({ ...state, currentLocation });
+      history.replace({ pathname: "/map", state: {} });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <>
       <MapContainer center={state.currentLocation} zoom={state.zoom}>
